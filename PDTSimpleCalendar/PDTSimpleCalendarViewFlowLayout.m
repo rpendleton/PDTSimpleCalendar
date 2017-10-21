@@ -31,6 +31,10 @@ const CGFloat PDTSimpleCalendarFlowLayoutHeaderHeight = 30.0f;
                                              PDTSimpleCalendarFlowLayoutInsetRight);
         self.headerReferenceSize = CGSizeMake(0, PDTSimpleCalendarFlowLayoutHeaderHeight);
         
+        if (@available(iOS 11.0, *)) {
+            self.sectionInsetReference = UICollectionViewFlowLayoutSectionInsetFromSafeArea;
+        }
+
         //Note: Item Size is defined using the delegate to take into account the width of the view and calculate size dynamically
     }
 

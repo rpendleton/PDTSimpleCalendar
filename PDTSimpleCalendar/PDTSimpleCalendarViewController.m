@@ -452,7 +452,13 @@ static const NSCalendarUnit kCalendarUnitYMD = NSCalendarUnitYear | NSCalendarUn
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGFloat itemWidth = floorf(CGRectGetWidth(self.collectionView.bounds) / self.daysPerWeek);
+    CGFloat availableWidth = collectionView.frame.size.width;
+
+    if (@available(iOS 11.0, *)) {
+        availableWidth -= self.view.safeAreaInsets.left + self.view.safeAreaInsets.right;
+    }
+
+    CGFloat itemWidth = floorf(availableWidth / self.daysPerWeek);
 
     return CGSizeMake(itemWidth, itemWidth);
 }

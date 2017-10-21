@@ -55,9 +55,11 @@ const CGFloat PDTSimpleCalendarWeekdayHeaderHeight = 20.0f;
         }
         
         UILabel *firstWeekdaySymbolLabel = nil;
+        UILabel *lastWeekdaySymbolLabel = nil;
         
         NSMutableArray *weekdaySymbolLabelNameArr = [NSMutableArray array];
         NSMutableDictionary *weekdaySymbolLabelDict = [NSMutableDictionary dictionary];
+
         for (NSInteger index = 0; index < adjustedSymbols.count; index++)
         {
             NSString *labelName = [NSString stringWithFormat:@"weekdaySymbolLabel%d", (int)index];
@@ -70,6 +72,7 @@ const CGFloat PDTSimpleCalendarWeekdayHeaderHeight = 20.0f;
             weekdaySymbolLabel.textAlignment = NSTextAlignmentCenter;
             weekdaySymbolLabel.backgroundColor = [UIColor clearColor];
             weekdaySymbolLabel.translatesAutoresizingMaskIntoConstraints = NO;
+            lastWeekdaySymbolLabel = weekdaySymbolLabel;
             
             [self addSubview:weekdaySymbolLabel];
             
@@ -82,10 +85,22 @@ const CGFloat PDTSimpleCalendarWeekdayHeaderHeight = 20.0f;
                 [self addConstraint:[NSLayoutConstraint constraintWithItem:weekdaySymbolLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:firstWeekdaySymbolLabel attribute:NSLayoutAttributeWidth multiplier:1 constant:0]];
             }
         }
-        
-        NSString *layoutString = [NSString stringWithFormat:@"|[%@(>=0)]|", [weekdaySymbolLabelNameArr componentsJoinedByString:@"]["]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:layoutString options:NSLayoutFormatAlignAllCenterY metrics:nil views:weekdaySymbolLabelDict]];
 
+        NSString *layoutString = [NSString stringWithFormat:@"[%@(>=0)]", [weekdaySymbolLabelNameArr componentsJoinedByString:@"]["]];
+
+        if (@available(iOS 11.0, *)) {
+            NSArray *constraints = @[
+                                     [firstWeekdaySymbolLabel.leadingAnchor constraintEqualToAnchor:self.safeAreaLayoutGuide.leadingAnchor],
+                                     [lastWeekdaySymbolLabel.trailingAnchor constraintEqualToAnchor:self.safeAreaLayoutGuide.trailingAnchor]
+                                     ];
+
+            [NSLayoutConstraint activateConstraints:constraints];
+        }
+        else {
+            layoutString = [NSString stringWithFormat:@"|%@|", layoutString];
+        }
+
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:layoutString options:NSLayoutFormatAlignAllCenterY metrics:nil views:weekdaySymbolLabelDict]];
     }
     
     return self;
